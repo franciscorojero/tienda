@@ -1,11 +1,14 @@
 const express = require('express');
 const mysql = require('mysql2');
+const cors = require('cors');   // <-- IMPORTANTE
 require('dotenv').config();
 
 const app = express();
+
+app.use(cors());               // <-- HABILITA CORS
 app.use(express.json());
 
-// Conexión MySQL (se abre solo cuando se usa)
+// Conexión MySQL
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -19,7 +22,7 @@ app.get('/', (req, res) => {
   res.send('API de Productos funcionando en Vercel ✔️');
 });
 
-// Crear producto (CREATE)
+// Crear producto
 app.post('/productos', (req, res) => {
   const { nombre, precio } = req.body;
   const sql = 'INSERT INTO productos (nombre, precio) VALUES (?, ?)';
@@ -30,7 +33,7 @@ app.post('/productos', (req, res) => {
   });
 });
 
-// Obtener todos los productos (READ)
+// Obtener todos los productos
 app.get('/productos', (req, res) => {
   const sql = 'SELECT * FROM productos';
 
@@ -40,7 +43,7 @@ app.get('/productos', (req, res) => {
   });
 });
 
-// Obtener producto por ID (READ)
+// Obtener producto por ID
 app.get('/productos/:id', (req, res) => {
   const sql = 'SELECT * FROM productos WHERE id = ?';
 
@@ -53,7 +56,7 @@ app.get('/productos/:id', (req, res) => {
   });
 });
 
-// Actualizar producto (UPDATE)
+// Actualizar producto
 app.put('/productos/:id', (req, res) => {
   const { nombre, precio } = req.body;
   const sql = 'UPDATE productos SET nombre = ?, precio = ? WHERE id = ?';
@@ -64,7 +67,7 @@ app.put('/productos/:id', (req, res) => {
   });
 });
 
-// Eliminar producto (DELETE)
+// Eliminar producto
 app.delete('/productos/:id', (req, res) => {
   const sql = 'DELETE FROM productos WHERE id = ?';
 
